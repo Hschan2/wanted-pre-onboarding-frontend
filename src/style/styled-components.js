@@ -10,16 +10,16 @@ export const SignInComponent = styled.div`
 `
 
 export const SignInput = styled.input`
-    width: 200px;
-    padding: 10px;
+    width: 400px;
+    padding: 15px;
     margin: 5px 0;
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 10px;
 `
 
 export const SignButton = styled.button`
-    width: 200px;
-    padding: 10px;
+    width: 400px;
+    padding: 15px;
     margin: 5px 0;
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 10px;
