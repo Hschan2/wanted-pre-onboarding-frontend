@@ -1,43 +1,66 @@
-import styled from '@emotion/styled'
-import React from 'react'
-
-const SignInComponent = styled.div`
-  width: 100%;
-  height: 90vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
-
-const SignInput = styled.input`
-  width: 200px;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-`
-
-const SignButton = styled.button`
-  width: 200px;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  background-color: white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.02);
-  }
-`
+import axios from 'axios';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { SignButton, SignInComponent, SignInput } from '../style/styled-components'
 
 const Signin = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isValid, setIsValid] = useState(false);
+  const navigate = useNavigate();
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    validateForm(e.target.value, password);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    validateForm(email, e.target.value);
+  };
+
+  const validateForm = (email, password) => {
+    const isEmailValid = email.includes('@');
+    const isPasswordValid = password.length >= 8;
+
+    setIsValid(isEmailValid && isPasswordValid);
+  };
+
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post('/auth/signin', {
+        email,
+        password,
+      });
+
+      localStorage.setItem('token', res.data.access_token);
+
+      navigate('/todo');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SignInComponent>
-      <SignInput data-testid="email-input" placeholder='Write a E-mail' />
-      <SignInput data-testid="password-input" placeholder='Write a Password' />
-      <SignButton data-testid="signin-button">로그인</SignButton>
+      <SignInput
+        data-testid="email-input"
+        value={email}
+        onChange={handleEmailChange}
+        placeholder='example@gmail.com'
+      />
+      <SignInput
+        data-testid="password-input"
+        value={password}
+        onChange={handlePasswordChange}
+        placeholder='8글자 이상 입력 필수'
+      />
+      <SignButton
+        data-testid="signin-button"
+        onClick={handleLogin}
+      >
+        로그인
+      </SignButton>
     </SignInComponent>
   )
 }
