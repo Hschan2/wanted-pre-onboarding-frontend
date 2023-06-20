@@ -2,13 +2,10 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AUTH_URL } from '../api/api';
-import { SignButton, SignInput, FlexComponent } from '../style/styled-components'
+import SignComponent from '../components/SignComponent';
 
 const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -18,24 +15,7 @@ const Signup = () => {
     }
   }, []);
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    validateForm(e.target.value, password);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    validateForm(email, e.target.value);
-  };
-
-  const validateForm = (email, password) => {
-    const isEmailValid = email.includes('@');
-    const isPasswordValid = password.length >= 8;
-
-    setIsValid(isEmailValid && isPasswordValid);
-  };
-
-  const onSubmit = async () => {
+  const onSubmit = async (email, password) => {
     try {
       await axios.post(`${AUTH_URL}/signup`, {
         email: email,
@@ -60,29 +40,12 @@ const Signup = () => {
   };
 
   return (
-    <FlexComponent>
-      {!isValid && <div>이메일과 비밀번호를 제대로 입력해 주세요.</div>}
-      <SignInput
-        data-testid="email-input"
-        value={email}
-        onChange={handleEmailChange}
-        placeholder='example@gmail.com'
-      />
-      <SignInput
-        data-testid="password-input"
-        type={password}
-        value={password}
-        onChange={handlePasswordChange}
-        placeholder='8글자 이상 입력 필수'
-      />
-      <SignButton
-        data-testid="signup-button"
-        disabled={!isValid}
-        onClick={onSubmit}
-      >
-        회원가입
-      </SignButton>
-    </FlexComponent>
+    <SignComponent
+      onSubmit={onSubmit}
+      buttonText="회원가입"
+      placeholderEmail="example@gmail.com"
+      placeholderPassword="비밀번호를 8글자 이상 입력해 주세요."
+    />
   )
 }
 

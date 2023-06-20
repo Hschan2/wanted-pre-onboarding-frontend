@@ -2,8 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import MainPage from './components/MainPage';
 import Nav from './nav/Nav';
-import Signin from './user/Signin'
-import Signup from './user/Signup'
+import SignIn from './user/SignIn'
+import SignUp from './user/SignUp'
 
 function App() {
   return (
@@ -11,8 +11,8 @@ function App() {
       <Nav/>
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </>
   );
