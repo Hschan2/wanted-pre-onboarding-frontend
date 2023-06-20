@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
 
-export const SignInComponent = styled.div`
+// Input 컴포넌트 스타일
+export const FlexComponent = styled.div`
     width: 100%;
     height: 90vh;
     display: flex;
@@ -30,3 +32,39 @@ export const SignButton = styled.button`
         background-color: rgba(0, 0, 0, 0.02);
     }
 `
+
+// 메인화면 이미지
+export const MainImage = styled.img`
+    width: 500px;
+`
+
+// NavBer 스타일
+export const NavContainer = styled.nav`
+  width: 100%;
+  height: 8vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #1192ff;
+  border-radius: 0 0 10px 10px;
+`;
+
+export const Title = styled.h1`
+  margin: 0;
+`;
+
+export const LinksContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const NavLink = styled(Link)`
+  margin-left: 1rem;
+  text-decoration: none;
+  color: #fff;
+
+  &:first-of-type {
+    margin-left: 0;
+  }
+`;
