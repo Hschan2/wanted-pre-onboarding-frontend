@@ -1,13 +1,22 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { SignButton, SignInComponent, SignInput } from '../style/styled-components'
+import { AUTH_URL } from '../api/api';
+import { SignButton, SignInput, FlexComponent } from '../style/styled-components'
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [isValid, setIsValid] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      navigate('/todo');
+    }
+  }, []);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -26,21 +35,33 @@ const Signup = () => {
     setIsValid(isEmailValid && isPasswordValid);
   };
 
-  const handleSignup = async () => {
+  const onSubmit = async () => {
     try {
-      const res = await axios.post('/auth/signup', {
-        email,
-        password
+      await axios.post(`${AUTH_URL}/signup`, {
+        email: email,
+        password: password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
-
-      navigate('/signin');
+        .then(response => {
+          console.log(response);
+          alert("가입이 완료되었습니다.");
+          navigate('/signin')
+        })
+        .catch(error => {
+          console.log(error);
+          alert("가입에 실패하였습니다.");
+        })
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <SignInComponent>
+    <FlexComponent>
+      {!isValid && <div>이메일과 비밀번호를 제대로 입력해 주세요.</div>}
       <SignInput
         data-testid="email-input"
         value={email}
@@ -57,11 +78,11 @@ const Signup = () => {
       <SignButton
         data-testid="signup-button"
         disabled={!isValid}
-        onClick={handleSignup}
+        onClick={onSubmit}
       >
         회원가입
       </SignButton>
-    </SignInComponent>
+    </FlexComponent>
   )
 }
 

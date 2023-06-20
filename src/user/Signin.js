@@ -1,13 +1,22 @@
 import axios from 'axios';
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { SignButton, SignInComponent, SignInput } from '../style/styled-components'
+import React, { useEffect, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom';
+import { AUTH_URL } from '../api/api';
+import { SignButton, SignInput, FlexComponent } from '../style/styled-components'
 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+  
+    if (token) {
+      Navigate('/todo');
+    }
+  }, []);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -26,23 +35,38 @@ const Signin = () => {
     setIsValid(isEmailValid && isPasswordValid);
   };
 
-  const handleLogin = async () => {
+  const onSubmit = async () => {
     try {
-      const res = await axios.post('/auth/signin', {
-        email,
-        password,
-      });
-
-      localStorage.setItem('token', res.data.access_token);
-
-      navigate('/todo');
+      await axios.post(`${AUTH_URL}/signin`, {
+        email: email,
+        password: password,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if (response.access_token) {
+            localStorage.setItem('token', response.data.access_token);
+            alert("로그인이 완료되었습니다.");
+            navigate('/todo');
+          } else {
+            alert("이메일과 비밀번호를 다시 입력해 주세요.");
+          }
+          
+        })
+        .catch(error => {
+          console.log(error);
+          alert("로그인에 실패하였습니다.");
+        })
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <SignInComponent>
+    <FlexComponent>
+      {!isValid && <div>이메일과 비밀번호를 제대로 입력해 주세요.</div>}
       <SignInput
         data-testid="email-input"
         value={email}
@@ -57,11 +81,12 @@ const Signin = () => {
       />
       <SignButton
         data-testid="signin-button"
-        onClick={handleLogin}
+        disabled={!isValid}
+        onClick={onSubmit}
       >
         로그인
       </SignButton>
-    </SignInComponent>
+    </FlexComponent>
   )
 }
 
