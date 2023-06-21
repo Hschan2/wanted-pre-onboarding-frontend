@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FlexComponent, SignButton, SignInput } from '../style/styled-components';
 
-const SignComponent = ({ onSubmit, buttonText, placeholderEmail, placeholderPassword }) => {
+const SignComponent = ({ onSubmit, buttonText, placeholderEmail, placeholderPassword, testid }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
@@ -40,13 +40,13 @@ const SignComponent = ({ onSubmit, buttonText, placeholderEmail, placeholderPass
       />
       <SignInput
         data-testid="password-input"
-        type={password}
+        type="password"
         value={password}
         onChange={handlePasswordChange}
         placeholder={placeholderPassword}
       />
       <SignButton
-        data-testid="signup-button"
+        data-testid={testid}
         disabled={!isValid}
         onClick={handleFormSubmit}
       >

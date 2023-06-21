@@ -3,6 +3,7 @@ import './App.css';
 import MainPage from './components/MainPage';
 import NotFound from './components/NotFound';
 import Nav from './nav/Nav';
+import Todo from './todos/Todo';
 import SignIn from './user/SignIn'
 import SignUp from './user/SignUp'
 
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/todo" element={<Todo />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

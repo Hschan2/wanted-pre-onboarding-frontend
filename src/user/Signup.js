@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AUTH_URL } from '../api/api';
 import SignComponent from '../components/SignComponent';
@@ -15,29 +15,27 @@ const Signup = () => {
     }
   }, []);
 
-  const onSubmit = async (email, password) => {
-    try {
-      await axios.post(`${AUTH_URL}/signup`, {
+  const onSubmit = (email, password) => {
+    fetch(`${AUTH_URL}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         email: email,
-        password: password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        password: password,
+      }),
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log(result);
+        alert("가입이 완료되었습니다.");
+        navigate("/signin");
       })
-        .then(response => {
-          console.log(response);
-          alert("가입이 완료되었습니다.");
-          navigate('/signin')
-        })
-        .catch(error => {
-          console.log(error);
-          alert("가입에 실패하였습니다.");
-        })
-    } catch (err) {
-      console.log(err);
-    }
-  };
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   return (
     <SignComponent
@@ -45,6 +43,7 @@ const Signup = () => {
       buttonText="회원가입"
       placeholderEmail="example@gmail.com"
       placeholderPassword="비밀번호를 8글자 이상 입력해 주세요."
+      testid="signup-button"
     />
   )
 }

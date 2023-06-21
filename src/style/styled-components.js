@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // Input 컴포넌트 스타일
 export const FlexComponent = styled.div`
     width: 100%;
-    height: 90vh;
+    height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -68,3 +68,30 @@ export const NavLink = styled(Link)`
     margin-left: 0;
   }
 `;
+
+// ToDo Style
+export const ToDoInput = styled.input`
+  width: 200px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+`
+
+export const ToDoButton = styled.button`
+    width: 50px;
+    padding: 10px;
+    margin: 0px 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    background-color: white;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+`
+
+export const CheckBoxStyle = styled.input`
+    accent-color: #1192ff;
+`
