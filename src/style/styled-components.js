@@ -95,3 +95,7 @@ export const ToDoButton = styled.button`
 export const CheckBoxStyle = styled.input`
     accent-color: #1192ff;
 `
+
+export const UlStyle = styled.ul`
+  list-style-type: none;
+`

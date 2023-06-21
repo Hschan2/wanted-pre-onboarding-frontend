@@ -2,195 +2,203 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { TODO_URL } from '../api/api';
-import { CheckBoxStyle, FlexComponent, ToDoButton, ToDoInput } from '../style/styled-components';
+import { CheckBoxStyle, FlexComponent, ToDoButton, ToDoInput, UlStyle } from '../style/styled-components';
 
 const Todo = () => {
     const [todos, setTodos] = useState([]);
-    const [isUpdating, setIsUpdating] = useState([]);
-    const [inputValue, setInputValue] = useState('');
-    const [updateValue, setUpdateValue] = useState('');
-    const [token, setToken] = useState(null);
-    const navigate = useNavigate();
+  const [isUpdating, setIsUpdating] = useState({});
+  const [inputValue, setInputValue] = useState('');
+  const [updateValues, setUpdateValues] = useState({}); // Updated: State to store update values
+  const [token, setToken] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const storedToken = localStorage.getItem('access_token');
-        setToken(storedToken);
-    }, []);
+  useEffect(() => {
+    const userToken = localStorage.getItem('access_token');
+    setToken(userToken);
+  }, []);
 
-    useEffect(() => {
-        loadTodos();
-    }, [token]);
+  useEffect(() => {
+    getTodos();
+  }, [token]);
 
-    const loadTodos = async () => {
-        if (!token) {
-            navigate('/signin');
-        } else {
-            try {
-                const response = await axios.get(TODO_URL, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+  const getTodos = async () => {
+    if (!token) {
+      navigate('/signin');
+    } else {
+      try {
+        const response = await axios.get(TODO_URL, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-                setTodos(response.data);
-                setIsUpdating(Array.from({ length: response.data.length }, () => false));
-            } catch (error) {
-                console.log("ToDo 불러오기 실패")
-                console.error(error);
-            }
-        }
-    };
+        setTodos(response.data);
 
-    const handleInputChange = (event) => {
-        setInputValue(event.target.value);
-    };
+        setIsUpdating(
+          response.data.reduce((acc, todo) => {
+            acc[todo.id] = false;
+            return acc;
+          }, {})
+        );
+      } catch (error) {
+        console.log('ToDo 불러오기 실패');
+        console.error(error);
+      }
+    }
+  };
 
-    const handleUpdateInputChange = (event) => {
-        setUpdateValue(event.target.value);
-    };
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
 
-    const handleAddTodo = async () => {
-        if (inputValue.trim() !== '') {
-            setInputValue('');
-        }
+  const handleUpdateInputChange = (event, id) => {
+    setUpdateValues((prevUpdateValues) => ({
+      ...prevUpdateValues,
+      [id]: event.target.value,
+    }));
+  };
 
-        try {
-            await axios.post(TODO_URL, {
-                    todo: inputValue,
-                    isDone: false,
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+  const handleAddTodo = async () => {
+    if (inputValue.trim() !== '') {
+      setInputValue('');
+    }
 
-            loadTodos();
-        } catch (error) {
-            console.log("ToDo 추가 실패")
-            console.error(error);
-        }
-    };
+    try {
+      await sendTodoRequest('post', '', {
+        todo: inputValue,
+        isDone: false,
+      });
+    } catch (error) {
+      console.log('ToDo 추가 실패');
+      console.error(error);
+    }
+  };
 
-    const handleDeleteTodo = async (id) => {
-        try {
-            await axios.delete(`${TODO_URL}/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+  const handleDeleteTodo = async (id) => {
+    try {
+      await sendTodoRequest('delete', `/${id}`);
+      console.log('ToDo 삭제 성공');
+    } catch (error) {
+      console.log('ToDo 삭제 실패');
+      console.error(error);
+    }
+  };
 
-            console.log("ToDo 삭제 성공");
-            loadTodos();
-        } catch (error) {
-            console.log("ToDo 삭제 실패");
-            console.error(error);
-        }
-    };
+  const handleUpdateTodo = async (id, isDone) => {
+    try {
+      setIsUpdating((prevIsUpdating) => ({
+        ...prevIsUpdating,
+        [id]: false,
+      }));
 
-    const handleUpdateTodo = async (id, index, isDone) => {
-        const newUpdating = [...isUpdating];
-        newUpdating[index] = false;
-        setIsUpdating(newUpdating);
-        updateTodo(id, updateValue, isDone);
-    };
+      await sendTodoRequest('put', `/${id}`, {
+        todo: updateValues[id],
+        isDone: isDone,
+      });
+      console.log('ToDo 업데이트 완료');
+    } catch (error) {
+      console.log('ToDo 업데이트 실패');
+      console.error(error);
+    }
+  };
 
-    const updateTodo = async (id, updatedTodo, isDone) => {
-        try {
-            await axios.put(`${TODO_URL}/${id}`, {
-                    todo: updatedTodo,
-                    isDone: isDone,
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+  const sendTodoRequest = async (method, endpoint, data) => {
+    try {
+      await axios({
+        method: method,
+        url: `${TODO_URL}${endpoint}`,
+        data: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-            console.log("ToDo 업데이트 완료");
-            loadTodos();
-        } catch (error) {
-            console.log("ToDo 업데이트 실패");
-            console.error(error);
-        }
-    };
+      getTodos();
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
 
-    return (
-        <FlexComponent>
-            <h1>ToDo List</h1>
-            <div>
+  return (
+    <FlexComponent>
+      <h1>ToDo List</h1>
+      <div>
+        <ToDoInput
+          data-testid="new-todo-input"
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+        />
+        <ToDoButton data-testid="new-todo-add-button" onClick={handleAddTodo}>
+          추가
+        </ToDoButton>
+      </div>
+
+      <UlStyle>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <CheckBoxStyle
+              type="checkbox"
+              checked={todo.isDone}
+              onChange={() => handleUpdateTodo(todo.id, !todo.isDone)}
+            />
+            {isUpdating[todo.id] ? (
+              <>
                 <ToDoInput
-                    data-testid="new-todo-input"
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
+                  data-testid="modify-input"
+                  value={updateValues[todo.id] || ''}
+                  onChange={(event) => handleUpdateInputChange(event, todo.id)}
                 />
-                <ToDoButton data-testid="new-todo-add-button" onClick={handleAddTodo}>
-                    추가
+                <ToDoButton
+                  data-testid="submit-button"
+                  onClick={() => handleUpdateTodo(todo.id, todo.isDone)}
+                >
+                  제출
                 </ToDoButton>
-            </div>
-
-            <ul>
-                {todos.map((todo, index) => (
-                    <li key={index}>
-                    <CheckBoxStyle
-                        type="checkbox"
-                        checked={todo.isDone}
-                        onChange={() => updateTodo(todo.id, todo.todo, !todo.isDone)}
-                    />
-                    {isUpdating[index] ? (
-                        <>
-                        <ToDoInput
-                            data-testid="modify-input"
-                            value={updateValue}
-                            onChange={handleUpdateInputChange}
-                        />
-                        <ToDoButton
-                            data-testid="submit-button"
-                            onClick={() => handleUpdateTodo(todo.id, index, todo.isDone)}
-                        >
-                            제출
-                        </ToDoButton>
-                        <ToDoButton
-                            data-testid="cancel-button"
-                            onClick={() => {
-                            const newUpdating = [...isUpdating];
-                            newUpdating[index] = false;
-                            setIsUpdating(newUpdating);
-                            }}
-                        >
-                            취소
-                        </ToDoButton>
-                        </>
-                    ) : (
-                        <>
-                        <span>{todo.todo}</span>
-                        <ToDoButton
-                            data-testid="modify-button"
-                            onClick={() => {
-                            const newUpdating = [...isUpdating];
-                            newUpdating[index] = true;
-                            setIsUpdating(newUpdating);
-                            setUpdateValue(todo.todo);
-                            }}
-                        >
-                            수정
-                        </ToDoButton>
-                        <ToDoButton
-                            data-testid="delete-button"
-                            onClick={() => handleDeleteTodo(todo.id)}
-                        >
-                            삭제
-                        </ToDoButton>
-                        </>
-                    )}
-                    </li>
-                ))}
-            </ul>
-        </FlexComponent>
-    )
+                <ToDoButton
+                  data-testid="cancel-button"
+                  onClick={() => {
+                    setIsUpdating((prevIsUpdating) => ({
+                      ...prevIsUpdating,
+                      [todo.id]: false,
+                    }));
+                  }}
+                >
+                  취소
+                </ToDoButton>
+              </>
+            ) : (
+              <>
+                <span>{todo.todo}</span>
+                <ToDoButton
+                  data-testid="modify-button"
+                  onClick={() => {
+                    setIsUpdating((prevIsUpdating) => ({
+                      ...prevIsUpdating,
+                      [todo.id]: true,
+                    }));
+                    setUpdateValues((prevUpdateValues) => ({
+                      ...prevUpdateValues,
+                      [todo.id]: todo.todo,
+                    }));
+                  }}
+                >
+                  수정
+                </ToDoButton>
+                <ToDoButton
+                  data-testid="delete-button"
+                  onClick={() => handleDeleteTodo(todo.id)}
+                >
+                  삭제
+                </ToDoButton>
+              </>
+            )}
+          </li>
+        ))}
+      </UlStyle>
+    </FlexComponent>
+  );
 }
 
 export default Todo
