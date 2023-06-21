@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 import { FlexComponent, SignButton, SignInput } from '../style/styled-components';
 
-const SignComponent = ({ onSubmit, buttonText, placeholderEmail, placeholderPassword, testid }) => {
+const SignComponent = ({
+  onSubmit,
+  buttonText,
+  placeholderEmail,
+  placeholderPassword,
+  testid
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -17,7 +24,7 @@ const SignComponent = ({ onSubmit, buttonText, placeholderEmail, placeholderPass
   };
 
   const validateForm = (email, password) => {
-    const isEmailValid = email.includes('@');
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isPasswordValid = password.length >= 8;
 
     setIsValid(isEmailValid && isPasswordValid);
@@ -26,12 +33,14 @@ const SignComponent = ({ onSubmit, buttonText, placeholderEmail, placeholderPass
   const handleFormSubmit = () => {
     if (isValid) {
       onSubmit(email, password);
+    } else {
+      setErrorMessage("이메일과 비밀번호를 제대로 입력해 주세요.");
     }
   };
   
   return (
     <FlexComponent>
-      {!isValid && <div>이메일과 비밀번호를 제대로 입력해 주세요.</div>}
+      {errorMessage && <div>{errorMessage}</div>}
       <SignInput
         data-testid="email-input"
         value={email}

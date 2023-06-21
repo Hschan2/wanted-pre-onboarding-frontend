@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { LinksContainer, NavContainer, NavLink, Title } from '../style/styled-components';
 
 const Nav = () => {
   const token = localStorage.getItem('access_token');
+
+  useEffect(() => {
+
+  }, [token])
 
   return (
     <NavContainer>
