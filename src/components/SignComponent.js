@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FlexComponent, SignButton, SignInput } from '../style/styled-components';
+import { ErrorMessage, FlexComponent, SignButton, SignInput } from '../style/styled-components';
 
 const SignComponent = ({
   onSubmit,
@@ -11,42 +11,66 @@ const SignComponent = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const emailCheckRegex = (email) => {
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    return emailRegex.test(email);
+  }
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    validateForm(e.target.value, password);
+    const inputEmail = e.target.value;
+    const emailCheck = emailCheckRegex(inputEmail);
+    
+    setEmail(inputEmail);
+
+    if (inputEmail && emailCheck) {
+      setEmailError('');
+      validateForm(inputEmail, password);
+    } else {
+      setEmailError("이메일을 다시 입력해 주세요.");
+      setIsValid(false);
+    }
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    validateForm(email, e.target.value);
+    const inputPassword = e.target.value;
+
+    setPassword(inputPassword);
+
+    if (inputPassword.length >= 8) {
+      setPasswordError('');
+      validateForm(email, inputPassword);
+    } else {
+      setPasswordError("비밀번호를 8글자 이상 입력해 주세요.");
+      setIsValid(false);
+    }
   };
 
   const validateForm = (email, password) => {
-    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const isPasswordValid = password.length >= 8;
-
-    setIsValid(isEmailValid && isPasswordValid);
+    if (email && password) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
   };
 
   const handleFormSubmit = () => {
     if (isValid) {
       onSubmit(email, password);
-    } else {
-      setErrorMessage("이메일과 비밀번호를 제대로 입력해 주세요.");
     }
   };
   
   return (
     <FlexComponent>
-      {errorMessage && <div>{errorMessage}</div>}
       <SignInput
         data-testid="email-input"
         value={email}
         onChange={handleEmailChange}
         placeholder={placeholderEmail}
       />
+      {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
       <SignInput
         data-testid="password-input"
         type="password"
@@ -54,6 +78,7 @@ const SignComponent = ({
         onChange={handlePasswordChange}
         placeholder={placeholderPassword}
       />
+      {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
       <SignButton
         data-testid={testid}
         disabled={!isValid}
