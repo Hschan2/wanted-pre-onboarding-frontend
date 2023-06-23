@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom';
 import { AUTH_URL } from '../api/api';
