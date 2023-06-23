@@ -99,3 +99,11 @@ export const CheckBoxStyle = styled.input`
 export const UlStyle = styled.ul`
   list-style-type: none;
 `
+
+export const ErrorMessage = styled.div`
+  width: 400px;
+  font-size: 14px;
+  color: #FF0000;
+  text-align: right;
+  margin-bottom: 5px;
+`
