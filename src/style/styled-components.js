@@ -80,7 +80,7 @@ export const ToDoInput = styled.input`
 
 export const ToDoButton = styled.button`
     width: 50px;
-    padding: 10px;
+    padding: 8px;
     margin: 0px 5px;
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 10px;
@@ -107,3 +107,54 @@ export const ErrorMessage = styled.div`
   text-align: right;
   margin-bottom: 5px;
 `
+
+// ToDoList
+export const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const Container = styled.div`
+  display: flex;
+  width: 100wv;
+  padding: 10px 10px;
+  margin: -2px 0px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.03);
+`
+
+export const Label = styled.label`
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+`;
+
+export const Checkbox = styled.input`
+  margin-right: 10px;
+`;
+
+export const Text = styled.span`
+  margin-right: 20px;
+  font-size: 18px;
+`;
+
+export const Button = styled.button`
+  width: 50px;
+  padding: 5px;
+  margin: 0px 2px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  color: #fff;
+  background-color: ${(props) => props.backgroundColor};
+  cursor: pointer;
+
+  &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+  }
+`;
+
+export const Input = styled.input`
+  margin-right: 10px;
+`;
