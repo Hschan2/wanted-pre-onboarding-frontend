@@ -120,8 +120,7 @@ export const Container = styled.div`
   width: 100wv;
   padding: 10px 10px;
   margin: -2px 0px;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 `
 
 export const Label = styled.label`
@@ -133,11 +132,37 @@ export const Label = styled.label`
 
 export const Checkbox = styled.input`
   margin-right: 10px;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  position: relative;
+  background-color: ${(props) => (props.isChecked ? '#1192FF' : 'transparent')};
+
+  &:checked {
+    background-color: #1192FF;
+  }
+
+  &:checked::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 3px;
+    height: 6px;
+    border-style: solid;
+    border-color: #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
 `;
 
 export const Text = styled.span`
   margin-right: 20px;
   font-size: 18px;
+  text-decoration: ${(props) => (props.isChecked ? 'line-through' : 'none')};
 `;
 
 export const Button = styled.button`

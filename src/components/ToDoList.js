@@ -51,11 +51,11 @@ const ToDoList = ({ data, getData }) => {
     }
 
     const handleCheckBox = async () => {
-        setIsUpdating(prev => !prev);
+        setIsCompleted((prev) => !prev);
 
         axios.put(`${TODO_URL}/${id}`, {
             todo: data.todo,
-            isUpdating: !isUpdating
+            isCompleted: !isCompleted
         }, {
             headers: {
                 Authorization: `Bearer ${userToken}`,
@@ -71,20 +71,14 @@ const ToDoList = ({ data, getData }) => {
     }
 
     const updateClick = (e) => {
-        e.preventDefault();
-
         setIsUpdating(true);
     }
 
     const submitClick = (e) => {
-        e.preventDefault();
-
         setTodo(e.currentTarget.value);
     }
 
     const cancelClick = (e) => {
-        e.preventDefault();
-
         setIsUpdating(false);
         setIsCompleted(data.isCompleted);
     }
@@ -98,18 +92,19 @@ const ToDoList = ({ data, getData }) => {
                             type='checkbox'
                             checked={data.isCompleted}
                             onChange={handleCheckBox}
+                            isChecked={isCompleted}
                         />
-                        <Text>{data.todo}</Text>
+                        <Text isChecked={isCompleted}>{data.todo}</Text>
                     </Label>
                     <Button
-                        backgroundColor='#1192ff'
+                        backgroundColor='#1192FF'
                         data-testid="modify-button"
                         onClick={updateClick}
                     >
                         수정
                     </Button>
                     <Button
-                        backgroundColor='#ff6961'
+                        backgroundColor='#C23B22'
                         data-testid="delete-button"
                         onClick={handleDelete}
                     >
@@ -121,7 +116,7 @@ const ToDoList = ({ data, getData }) => {
                     <Label>
                         <Checkbox
                             type='checkbox'
-                            checked={isUpdating}
+                            checked={isCompleted}
                             onChange={handleCheckBox}
                         />
                         <Input
@@ -130,14 +125,14 @@ const ToDoList = ({ data, getData }) => {
                         />
                     </Label>
                     <Button
-                        backgroundColor='#1192ff'
+                        backgroundColor='#1192FF'
                         data-testid="submit-button"
                         onClick={handleSubmit}
                     >
                         제출
                     </Button>
                     <Button
-                        backgroundColor='#ff6961'
+                        backgroundColor='#C23B22'
                         data-testid="cancel-button"
                         onClick={cancelClick}
                     >
