@@ -29,7 +29,7 @@ const SignComponent = ({
       setEmailError('');
       validateForm(inputEmail, password);
     } else {
-      setEmailError("이메일을 다시 입력해 주세요.");
+      inputEmail.length === 0 ? setEmailError('') : setEmailError("이메일을 다시 입력해 주세요.");
       setIsValid(false);
     }
   };
@@ -43,7 +43,7 @@ const SignComponent = ({
       setPasswordError('');
       validateForm(email, inputPassword);
     } else {
-      setPasswordError("비밀번호를 8글자 이상 입력해 주세요.");
+      inputPassword.length === 0 ? setPasswordError('') : setPasswordError("비밀번호를 8글자 이상 입력해 주세요.");
       setIsValid(false);
     }
   };
@@ -66,6 +66,7 @@ const SignComponent = ({
     <FlexComponent>
       <SignInput
         data-testid="email-input"
+        type="email"
         value={email}
         onChange={handleEmailChange}
         placeholder={placeholderEmail}

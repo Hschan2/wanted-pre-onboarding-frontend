@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AUTH_URL } from '../api/api';
 import SignComponent from '../components/SignComponent';
+import axios from 'axios';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -14,26 +15,19 @@ const Signup = () => {
     }
   }, []);
 
-  const onSubmit = (email, password) => {
-    fetch(`${AUTH_URL}/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log(result);
-        alert("가입이 완료되었습니다.");
+  const onSubmit = async (email, password) => {
+    await axios
+      .post(`${AUTH_URL}/signup`, {
+        email,
+        password
+      })
+      .then(() => {
+        alert("회원가입이 완료되었습니다.");
         navigate("/signin");
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch((err) => {
+        alert(`Error: ${err.response.data.message}`);
+      })
   }
 
   return (

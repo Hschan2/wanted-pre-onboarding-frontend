@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom';
 import { AUTH_URL } from '../api/api';
 import SignComponent from '../components/SignComponent';
+import axios from 'axios';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -14,29 +15,19 @@ const SignIn = () => {
     }
   }, []);
 
-  const onSubmit = (email, password) => {
-    fetch(`${AUTH_URL}/signin`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then(response => response.json())
-      .then(result => {
-        if (result.access_token) {
-          localStorage.setItem('access_token', result.access_token);
-          navigate('/todo');
-        } else {
-          alert('이메일과 비밀번호가 맞지 않습니다.');
-        }
+  const onSubmit = async (email, password) => {
+    await axios
+      .post(`${AUTH_URL}/signin`, {
+        email,
+        password,
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .then((response) => {
+        localStorage.setItem("access_token", response.data.access_token);
+        navigate("/todo");
+      })
+      .catch(err => {
+        alert(`Error: ${err.response.data.message}`);
+      })
   }
 
   return (
