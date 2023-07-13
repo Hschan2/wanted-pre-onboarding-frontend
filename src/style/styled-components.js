@@ -113,14 +113,16 @@ export const ListItem = styled.li`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  margin-left: -42px;
 `;
 
 export const Container = styled.div`
   display: flex;
   width: 100wv;
-  padding: 10px 10px;
+  padding: 10px 20px;
   margin: -2px 0px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 40px;
 `
 
 export const Label = styled.label`
