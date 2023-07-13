@@ -61,6 +61,13 @@ const SignComponent = ({
       onSubmit(email, password);
     }
   };
+
+  const handleEnterPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleFormSubmit();
+    }
+  }
   
   return (
     <FlexComponent>
@@ -69,6 +76,7 @@ const SignComponent = ({
         type="email"
         value={email}
         onChange={handleEmailChange}
+        onKeyDown={handleEnterPress}
         placeholder={placeholderEmail}
       />
       {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
@@ -77,6 +85,7 @@ const SignComponent = ({
         type="password"
         value={password}
         onChange={handlePasswordChange}
+        onKeyDown={handleEnterPress}
         placeholder={placeholderPassword}
       />
       {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}

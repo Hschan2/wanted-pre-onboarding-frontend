@@ -67,6 +67,13 @@ const Todo = () => {
     setTodo(value);
   }
 
+  const handleEnterPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTodo();
+    }
+  }
+
   return (
     <FlexComponent>
       <h1>ToDo List</h1>
@@ -76,6 +83,7 @@ const Todo = () => {
           type="text"
           value={todo}
           onChange={handleInputChange}
+          onKeyDown={handleEnterPress}
           placeholder='Write a New ToDo'
         />
         <ToDoButton

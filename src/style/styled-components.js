@@ -184,4 +184,7 @@ export const Button = styled.button`
 
 export const Input = styled.input`
   margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
 `;

@@ -83,6 +83,17 @@ const ToDoList = ({ data, getData }) => {
         setIsCompleted(data.isCompleted);
     }
 
+    const handleEnterPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSubmit();
+        }
+    }
+
+    const inputStyle = {
+        width: `${todo.length * 25}px`
+    };
+
     return (
         <ListItem>
             {!isUpdating ? (
@@ -120,8 +131,10 @@ const ToDoList = ({ data, getData }) => {
                             onChange={handleCheckBox}
                         />
                         <Input
+                            style={inputStyle}
                             defaultValue={data.todo}
                             onChange={submitClick}
+                            onKeyDown={handleEnterPress}
                         />
                     </Label>
                     <Button
